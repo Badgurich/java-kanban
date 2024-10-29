@@ -4,15 +4,15 @@ public class Task {
 		protected String name;
 		protected String description;
 		protected int taskId;
-		protected Statuses status;
+		protected Status status;
 
-		public Task(String name, String description, Statuses status) {
+		public Task(String name, String description, Status status) {
 				this.name = name;
 				this.description = description;
 				this.status = status;
 		}
 
-		public Task(String name, String description, int taskId, Statuses status) {
+		public Task(String name, String description, int taskId, Status status) {
 				this.name = name;
 				this.description = description;
 				this.taskId = taskId;
@@ -43,11 +43,11 @@ public class Task {
 				this.taskId = taskId;
 		}
 
-		public Statuses getStatus() {
+		public Status getStatus() {
 				return status;
 		}
 
-		public void setStatus(Statuses status) {
+		public void setStatus(Status status) {
 				this.status = status;
 		}
 
