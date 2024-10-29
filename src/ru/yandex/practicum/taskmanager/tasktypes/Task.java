@@ -1,3 +1,7 @@
+package ru.yandex.practicum.taskmanager.tasktypes;
+
+import ru.yandex.practicum.taskmanager.enums.Status;
+
 import java.util.Objects;
 
 public class Task {
@@ -52,16 +56,8 @@ public class Task {
 		}
 
 		@Override
-		public boolean equals(Object o) {
-				if (this == o) return true;
-				if (o == null || getClass() != o.getClass()) return false;
-				Task task = (Task) o;
-				return getTaskId() == task.getTaskId() && Objects.equals(getName(), task.getName()) && Objects.equals(getDescription(), task.getDescription()) && getStatus() == task.getStatus();
-		}
-
-		@Override
 		public String toString() {
-				return "Task{" +
+				return "ru.yandex.practicum.taskmanager.tasktypes.Task{" +
 								"name='" + name + '\'' +
 								", description='" + description + '\'' +
 								", taskId=" + taskId +
@@ -70,7 +66,15 @@ public class Task {
 		}
 
 		@Override
+		public boolean equals(Object o) {
+				if (this == o) return true;
+				if (o == null || getClass() != o.getClass()) return false;
+				Task task = (Task) o;
+				return getTaskId() == task.getTaskId();
+		}
+
+		@Override
 		public int hashCode() {
-				return Objects.hash(getName(), getDescription(), getTaskId(), getStatus());
+				return Objects.hashCode(getTaskId());
 		}
 }

@@ -1,3 +1,9 @@
+import ru.yandex.practicum.taskmanager.enums.Status;
+import ru.yandex.practicum.taskmanager.tasktypes.Epic;
+import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
+import ru.yandex.practicum.taskmanager.tasktypes.Task;
+import ru.yandex.practicum.taskmanager.util.TaskManager;
+
 static void main(String[] args) {
 		TaskManager tm = new TaskManager();
 
@@ -24,7 +30,7 @@ static void main(String[] args) {
 
 		tm.updateTask(new Task("Задача 1", "Первая задача", task1.getTaskId(), Status.IN_PROGRESS));
 		tm.updateSubtask(new Subtask("Сабтаск 1", "Первая сабтаска", subtask1.getTaskId(), Status.DONE, epic1.getTaskId()));
-		tm.updateSubtask(new Subtask("Сабтаск 3", "Третья сабтаска", subtask3.getTaskId() , Status.DONE, epic2.getTaskId()));
+		tm.updateSubtask(new Subtask("Сабтаск 3", "Третья сабтаска", subtask3.getTaskId(), Status.DONE, epic2.getTaskId()));
 
 		System.out.println("Статус Таск 1: " + tm.getTask(task1.getTaskId()).getStatus());
 		System.out.println("Статус Сабтаск 1: " + tm.getSubtask(subtask1.getTaskId()).getStatus());
@@ -32,7 +38,7 @@ static void main(String[] args) {
 		System.out.println("Статус Эпик 2: " + tm.getEpic(epic2.getTaskId()).getStatus());
 
 		tm.removeTask(task1.getTaskId());
-		tm.removeEpic(epic1.getTaskId()); //Надо ли удалять связанные сабтаски?
+		tm.removeEpic(epic1.getTaskId());
 
 		System.out.println(tm.getTaskList());
 		System.out.println(tm.getEpicList());

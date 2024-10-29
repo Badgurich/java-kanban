@@ -1,5 +1,9 @@
+package ru.yandex.practicum.taskmanager.tasktypes;
+
+import ru.yandex.practicum.taskmanager.enums.Status;
+
 public class Subtask extends Task {
-		int linkedEpicId;
+		private int linkedEpicId;
 
 		public Subtask(String name, String description, Status status, int linkedEpicId) {
 				super(name, description, status);
@@ -17,7 +21,7 @@ public class Subtask extends Task {
 
 		@Override
 		public String toString() {
-				return "Subtask{" +
+				return "ru.yandex.practicum.taskmanager.tasktypes.Subtask{" +
 								"epic=" + linkedEpicId +
 								", name='" + name + '\'' +
 								", description='" + description + '\'' +
