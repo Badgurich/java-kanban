@@ -14,7 +14,7 @@ public class InMemoryTaskManager implements TaskManager {
 		private HashMap<Integer, Task> taskList = new HashMap<>();
 		private HashMap<Integer, Epic> epicList = new HashMap<>();
 		private HashMap<Integer, Subtask> subtaskList = new HashMap<>();
-		public static int idCounter = 1;
+		public int idCounter = 1;
 		HistoryManager history = Managers.getDefaultHistory();
 
 		@Override
@@ -86,8 +86,8 @@ public class InMemoryTaskManager implements TaskManager {
 				if (epicList.containsKey(subtask.getEpicId())) {
 						subtask.setTaskId(idCounter++);
 						subtaskList.put(subtask.getTaskId(), subtask);
-						getEpic(subtask.getEpicId()).linkedSubtasks.add(subtask);
-						updateEpicStatus(getEpic(subtask.getEpicId()));
+						getEpicLocal(subtask.getEpicId()).linkedSubtasks.add(subtask);
+						updateEpicStatus(getEpicLocal(subtask.getEpicId()));
 				}
 		}
 
@@ -109,8 +109,8 @@ public class InMemoryTaskManager implements TaskManager {
 		public void updateSubtask(Subtask subtask) {
 				if (subtaskList.containsKey(subtask.getTaskId())) {
 						subtaskList.put(subtask.getTaskId(), subtask);
-						updateLinkedSubtasks(getEpic(subtask.getEpicId()));
-						updateEpicStatus(getEpic(subtask.getEpicId()));
+						updateLinkedSubtasks(getEpicLocal(subtask.getEpicId()));
+						updateEpicStatus(getEpicLocal(subtask.getEpicId()));
 				}
 		}
 
@@ -121,7 +121,7 @@ public class InMemoryTaskManager implements TaskManager {
 
 		@Override
 		public void removeEpic(int id) {
-				Epic epic = getEpic(id);
+				Epic epic = getEpicLocal(id);
 				ArrayList<Subtask> linkedSubtasks = epic.getLinkedSubtasks();
 				for (Subtask subtask : linkedSubtasks) {
 						removeSubtask(subtask.getTaskId());
@@ -133,7 +133,7 @@ public class InMemoryTaskManager implements TaskManager {
 		public void removeSubtask(int id) {
 				Subtask subtask = getSubtask(id);
 				subtaskList.remove(id);
-				updateEpicStatus(getEpic(subtask.getEpicId()));
+				updateEpicStatus(getEpicLocal(subtask.getEpicId()));
 		}
 
 		@Override
@@ -144,6 +144,10 @@ public class InMemoryTaskManager implements TaskManager {
 		@Override
 		public ArrayList<Task> getHistory() {
 				return history.getHistory();
+		}
+
+		private Epic getEpicLocal(int id) {
+				return epicList.get(id);
 		}
 
 		private void updateEpicStatus(Epic epic) {
