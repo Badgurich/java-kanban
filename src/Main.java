@@ -1,11 +1,14 @@
 import ru.yandex.practicum.taskmanager.enums.Status;
+import ru.yandex.practicum.taskmanager.interfaces.HistoryManager;
+import ru.yandex.practicum.taskmanager.interfaces.TaskManager;
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
 import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
-import ru.yandex.practicum.taskmanager.util.TaskManager;
+import ru.yandex.practicum.taskmanager.util.InMemoryTaskManager;
+import ru.yandex.practicum.taskmanager.util.Managers;
 
 static void main(String[] args) {
-		TaskManager tm = new TaskManager();
+		TaskManager tm = Managers.getDefault();
 
 		Task task1 = new Task("Задача 1", "Первая задача", Status.NEW);
 		Task task2 = new Task("Задача 2", "Вторая задача", Status.NEW);
@@ -43,4 +46,6 @@ static void main(String[] args) {
 		System.out.println(tm.getTaskList());
 		System.out.println(tm.getEpicList());
 		System.out.println(tm.getSubtaskList());
+
+		System.out.println(tm.getHistory());
 }
