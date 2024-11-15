@@ -15,7 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
 		private HashMap<Integer, Epic> epicList = new HashMap<>();
 		private HashMap<Integer, Subtask> subtaskList = new HashMap<>();
 		public int idCounter = 1;
-		HistoryManager history = Managers.getDefaultHistory();
+		private HistoryManager history = Managers.getDefaultHistory();
 
 		@Override
 		public ArrayList<Task> getTaskList() {
@@ -143,7 +143,7 @@ public class InMemoryTaskManager implements TaskManager {
 
 		@Override
 		public ArrayList<Task> getHistory() {
-				return history.getHistory();
+				return new ArrayList<>(history.getHistory());
 		}
 
 		private Epic getEpicLocal(int id) {
