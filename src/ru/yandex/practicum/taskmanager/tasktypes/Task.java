@@ -57,12 +57,7 @@ public class Task {
 
 		@Override
 		public String toString() {
-				return "ru.yandex.practicum.taskmanager.tasktypes.Task{" +
-								"name='" + name + '\'' +
-								", description='" + description + '\'' +
-								", taskId=" + taskId +
-								", status=" + status +
-								'}';
+				return "ru.yandex.practicum.taskmanager.tasktypes.Task{" + "name='" + name + '\'' + ", description='" + description + '\'' + ", taskId=" + taskId + ", status=" + status + '}';
 		}
 
 		@Override

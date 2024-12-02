@@ -21,12 +21,6 @@ public class Subtask extends Task {
 
 		@Override
 		public String toString() {
-				return "ru.yandex.practicum.taskmanager.tasktypes.Subtask{" +
-								"epic=" + linkedEpicId +
-								", name='" + name + '\'' +
-								", description='" + description + '\'' +
-								", taskId=" + taskId +
-								", status=" + status +
-								'}';
+				return "ru.yandex.practicum.taskmanager.tasktypes.Subtask{" + "epic=" + linkedEpicId + ", name='" + name + '\'' + ", description='" + description + '\'' + ", taskId=" + taskId + ", status=" + status + '}';
 		}
 }

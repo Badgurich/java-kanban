@@ -25,12 +25,6 @@ public class Epic extends Task {
 
 		@Override
 		public String toString() {
-				return "ru.yandex.practicum.taskmanager.tasktypes.Epic{" +
-								"linkedSubtasks=" + linkedSubtasks +
-								", name='" + name + '\'' +
-								", description='" + description + '\'' +
-								", taskId=" + taskId +
-								", status=" + status +
-								'}';
+				return "ru.yandex.practicum.taskmanager.tasktypes.Epic{" + "linkedSubtasks=" + linkedSubtasks + ", name='" + name + '\'' + ", description='" + description + '\'' + ", taskId=" + taskId + ", status=" + status + '}';
 		}
 }
