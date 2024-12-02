@@ -217,7 +217,7 @@ class InMemoryTaskManagerTest {
 		}
 
 		@Test
-		void getHistoryAndOnly10ResultsTest() {
+		void getHistoryTest() {
 				TaskManager tm = Managers.getDefault();
 				ArrayList<Task> expectedHistory = new ArrayList<>();
 				Task task1 = new Task("Задача 1", "Первая задача", Status.NEW);
@@ -245,15 +245,12 @@ class InMemoryTaskManagerTest {
 				tm.getSubtask(5);
 				expectedHistory.add(subtask2);
 				tm.getSubtask(5);
-				expectedHistory.add(subtask2);
 				tm.getSubtask(5);
-				expectedHistory.add(subtask2);
 				tm.getSubtask(5);
-				expectedHistory.add(subtask2);
 				tm.getSubtask(5);
-				expectedHistory.add(subtask2);
 				tm.getSubtask(5);
-				expectedHistory.add(subtask2);
+				tm.getTask(1);
+				expectedHistory.add(task1);
 				expectedHistory.removeFirst();
 				assertEquals(expectedHistory, tm.getHistory());
 
