@@ -1,8 +1,7 @@
 package ru.yandex.practicum.taskmanager.util;
 
-import ru.yandex.practicum.taskmanager.enums.Status;
-import ru.yandex.practicum.taskmanager.interfaces.HistoryManager;
-import ru.yandex.practicum.taskmanager.interfaces.TaskManager;
+import ru.yandex.practicum.taskmanager.managers.HistoryManager;
+import ru.yandex.practicum.taskmanager.managers.TaskManager;
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
 import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
@@ -35,6 +34,7 @@ public class InMemoryTaskManager implements TaskManager {
 		@Override
 		public void removeAllTasks() {
 				taskList.clear();
+
 		}
 
 		@Override
@@ -117,6 +117,7 @@ public class InMemoryTaskManager implements TaskManager {
 		@Override
 		public void removeTask(int id) {
 				taskList.remove(id);
+				history.remove(id);
 		}
 
 		@Override
@@ -127,6 +128,7 @@ public class InMemoryTaskManager implements TaskManager {
 						removeSubtask(subtask.getTaskId());
 				}
 				epicList.remove(id);
+				history.remove(id);
 		}
 
 		@Override
@@ -134,6 +136,7 @@ public class InMemoryTaskManager implements TaskManager {
 				Subtask subtask = getSubtask(id);
 				subtaskList.remove(id);
 				updateEpicStatus(getEpicLocal(subtask.getEpicId()));
+				history.remove(id);
 		}
 
 		@Override

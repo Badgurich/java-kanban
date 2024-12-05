@@ -1,6 +1,6 @@
 package ru.yandex.practicum.taskmanager.tasktypes;
 
-import ru.yandex.practicum.taskmanager.enums.Status;
+import ru.yandex.practicum.taskmanager.util.Status;
 
 import java.util.ArrayList;
 
@@ -25,12 +25,6 @@ public class Epic extends Task {
 
 		@Override
 		public String toString() {
-				return "ru.yandex.practicum.taskmanager.tasktypes.Epic{" +
-								"linkedSubtasks=" + linkedSubtasks +
-								", name='" + name + '\'' +
-								", description='" + description + '\'' +
-								", taskId=" + taskId +
-								", status=" + status +
-								'}';
+				return "ru.yandex.practicum.taskmanager.tasktypes.Epic{" + "linkedSubtasks=" + linkedSubtasks + ", name='" + name + '\'' + ", description='" + description + '\'' + ", taskId=" + taskId + ", status=" + status + '}';
 		}
 }

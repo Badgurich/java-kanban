@@ -1,11 +1,9 @@
-import ru.yandex.practicum.taskmanager.enums.Status;
-import ru.yandex.practicum.taskmanager.interfaces.HistoryManager;
-import ru.yandex.practicum.taskmanager.interfaces.TaskManager;
+import ru.yandex.practicum.taskmanager.managers.TaskManager;
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
 import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
-import ru.yandex.practicum.taskmanager.util.InMemoryTaskManager;
 import ru.yandex.practicum.taskmanager.util.Managers;
+import ru.yandex.practicum.taskmanager.util.Status;
 
 static void main(String[] args) {
 		TaskManager tm = Managers.getDefault();

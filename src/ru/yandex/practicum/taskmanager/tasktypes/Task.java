@@ -1,6 +1,6 @@
 package ru.yandex.practicum.taskmanager.tasktypes;
 
-import ru.yandex.practicum.taskmanager.enums.Status;
+import ru.yandex.practicum.taskmanager.util.Status;
 
 import java.util.Objects;
 
@@ -57,12 +57,7 @@ public class Task {
 
 		@Override
 		public String toString() {
-				return "ru.yandex.practicum.taskmanager.tasktypes.Task{" +
-								"name='" + name + '\'' +
-								", description='" + description + '\'' +
-								", taskId=" + taskId +
-								", status=" + status +
-								'}';
+				return "ru.yandex.practicum.taskmanager.tasktypes.Task{" + "name='" + name + '\'' + ", description='" + description + '\'' + ", taskId=" + taskId + ", status=" + status + '}';
 		}
 
 		@Override
