@@ -1,17 +1,17 @@
-package ru.yandex.practicum.taskmanager.interfaces;
+package ru.yandex.practicum.taskmanager.managers;
 
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
 import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
-		ArrayList<Task> getTaskList();
+		List<Task> getTaskList();
 
-		ArrayList<Epic> getEpicList();
+		List<Epic> getEpicList();
 
-		ArrayList<Subtask> getSubtaskList();
+		List<Subtask> getSubtaskList();
 
 		void removeAllTasks();
 
@@ -43,7 +43,7 @@ public interface TaskManager {
 
 		void removeSubtask(int id);
 
-		ArrayList<Task> getHistory();
+		List<Task> getHistory();
 
-		ArrayList<Subtask> getLinkedSubtasks(Epic epic);
+		List<Subtask> getLinkedSubtasks(Epic epic);
 }

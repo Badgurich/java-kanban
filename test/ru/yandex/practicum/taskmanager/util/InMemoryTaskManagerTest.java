@@ -1,13 +1,13 @@
 package ru.yandex.practicum.taskmanager.util;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.taskmanager.enums.Status;
-import ru.yandex.practicum.taskmanager.interfaces.TaskManager;
+import ru.yandex.practicum.taskmanager.managers.TaskManager;
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
 import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +22,7 @@ class InMemoryTaskManagerTest {
 				expectedTasks.add(task2);
 				tm.addTask(task1);
 				tm.addTask(task2);
-				ArrayList<Task> tasks = tm.getTaskList();
+				List<Task> tasks = tm.getTaskList();
 				assertEquals(expectedTasks, tasks);
 		}
 
@@ -36,7 +36,7 @@ class InMemoryTaskManagerTest {
 				expectedEpics.add(epic2);
 				tm.addEpic(epic1);
 				tm.addEpic(epic2);
-				ArrayList<Epic> epics = tm.getEpicList();
+				List<Epic> epics = tm.getEpicList();
 				assertEquals(expectedEpics, epics);
 		}
 
@@ -57,7 +57,7 @@ class InMemoryTaskManagerTest {
 				tm.addSubtask(subtask1);
 				tm.addSubtask(subtask2);
 				tm.addSubtask(subtask3);
-				ArrayList<Subtask> subtasks = tm.getSubtaskList();
+				List<Subtask> subtasks = tm.getSubtaskList();
 				assertEquals(expectedSubtasks, subtasks);
 		}
 

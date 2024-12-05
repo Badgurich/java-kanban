@@ -1,4 +1,4 @@
-package ru.yandex.practicum.taskmanager.interfaces;
+package ru.yandex.practicum.taskmanager.managers;
 
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
 
