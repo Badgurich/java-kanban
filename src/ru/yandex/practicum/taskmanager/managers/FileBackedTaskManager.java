@@ -1,11 +1,12 @@
-package ru.yandex.practicum.taskmanager.util;
+package ru.yandex.practicum.taskmanager.managers;
 
 import ru.yandex.practicum.taskmanager.exceptions.LineParsingException;
 import ru.yandex.practicum.taskmanager.exceptions.ManagerSaveException;
-import ru.yandex.practicum.taskmanager.managers.TaskManager;
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
 import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
+import ru.yandex.practicum.taskmanager.util.Status;
+import ru.yandex.practicum.taskmanager.util.TaskTypes;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,11 +16,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
-import static ru.yandex.practicum.taskmanager.util.TaskTypes.SUBTASK;
-import static ru.yandex.practicum.taskmanager.util.TaskTypes.valueOf;
+import static ru.yandex.practicum.taskmanager.util.TaskTypes.*;
 
-public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
-		File saveFile;
+public class FileBackedTaskManager extends InMemoryTaskManager {
+		private File saveFile;
 
 		public FileBackedTaskManager() {
 				super();
@@ -103,7 +103,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 		}
 
 		private String toString(Task task) {
-				if (task instanceof Subtask subtask) {
+				if (task.getType().equals(SUBTASK)) {
+						Subtask subtask = (Subtask) task;
 						return subtask.getTaskId() + ","
 										+ subtask.getType() + ","
 										+ subtask.getName() + ","
@@ -121,9 +122,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
 		private void save() {
 				try (Writer w = new FileWriter(saveFile, StandardCharsets.UTF_8)) {
-						if (saveFile.length() == 0) {
-								w.append("id,type,name,status,description,epic" + "\n");
-						}
+						w.append("id,type,name,status,description,epic" + "\n");
 						for (Task task : getTaskList()) {
 								w.append(toString(task)).append("\n");
 						}
@@ -156,7 +155,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 								task = new Task(name, description, id, status);
 								break;
 						case EPIC:
-								task = new Epic(name, description, id, status);
+								task = new Epic(name, description, id);
 								break;
 						case SUBTASK:
 								if (epicId != -1 && epicId != 0) {
@@ -175,14 +174,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 				FileBackedTaskManager tm = new FileBackedTaskManager(file);
 				try {
 						List<String> lines = Files.readAllLines(file.toPath());
-						for (String line : lines) {
-								if (line.equals("id,type,name,status,description,epic")) {
-										continue;
-								}
+						for (String line : lines.subList(1, lines.size())) {
 								Task task = fromString(line);
-								if (task instanceof Epic) {
+								if (task.getType().equals(EPIC)) {
 										tm.addEpic((Epic) task);
-								} else if (task instanceof Subtask) {
+								} else if (task.getType().equals(SUBTASK)) {
 										tm.addSubtask((Subtask) task);
 								} else {
 										tm.addTask(task);
@@ -190,6 +186,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 						}
 				} catch (IOException e) {
 						throw new ManagerSaveException("Ошибка загрузки из файла", e);
+				} catch (IllegalArgumentException e) {
+						try (FileWriter fw = new FileWriter(file, true)) {
+								fw.write("id,type,name,status,description,epic" + "\n");
+						} catch (IOException ex) {
+								throw new ManagerSaveException("Ошибка загрузки из файла", ex);
+						}
 				}
 				return tm;
 		}

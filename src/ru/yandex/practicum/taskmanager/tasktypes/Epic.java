@@ -6,20 +6,20 @@ import ru.yandex.practicum.taskmanager.util.TaskTypes;
 import java.util.ArrayList;
 
 public class Epic extends Task {
-		private final TaskTypes type = TaskTypes.EPIC;
 
 		public ArrayList<Subtask> linkedSubtasks = new ArrayList<>();
 
-		public Epic(String name, String description, Status status) {
-				super(name, description, status);
+		public Epic(String name, String description) {
+				super(name, description, Status.NEW);
 		}
 
-		public Epic(String name, String description, int taskId, Status status) {
-				super(name, description, taskId, status);
+		public Epic(String name, String description, int taskId) {
+				super(name, description, taskId, Status.NEW);
 		}
 
+		@Override
 		public TaskTypes getType() {
-				return type;
+				return TaskTypes.EPIC;
 		}
 
 		public ArrayList<Subtask> getLinkedSubtasks() {

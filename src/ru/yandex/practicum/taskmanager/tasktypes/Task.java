@@ -10,7 +10,6 @@ public class Task {
 		protected String description;
 		protected int taskId;
 		protected Status status;
-		public TaskTypes type = TaskTypes.TASK;
 
 		public Task(String name, String description, Status status) {
 				this.name = name;
@@ -26,7 +25,7 @@ public class Task {
 		}
 
 		public TaskTypes getType() {
-				return type;
+				return TaskTypes.TASK;
 		}
 
 		public String getName() {
