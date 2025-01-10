@@ -1,9 +1,11 @@
 package ru.yandex.practicum.taskmanager.tasktypes;
 
 import ru.yandex.practicum.taskmanager.util.Status;
+import ru.yandex.practicum.taskmanager.util.TaskTypes;
 
 public class Subtask extends Task {
 		private int linkedEpicId;
+		public TaskTypes type = TaskTypes.SUBTASK;
 
 		public Subtask(String name, String description, Status status, int linkedEpicId) {
 				super(name, description, status);
@@ -15,12 +17,16 @@ public class Subtask extends Task {
 				this.linkedEpicId = linkedEpicId;
 		}
 
+		public TaskTypes getType() {
+				return type;
+		}
+
 		public int getEpicId() {
 				return linkedEpicId;
 		}
 
 		@Override
 		public String toString() {
-				return "ru.yandex.practicum.taskmanager.tasktypes.Subtask{" + "epic=" + linkedEpicId + ", name='" + name + '\'' + ", description='" + description + '\'' + ", taskId=" + taskId + ", status=" + status + '}';
+				return taskId + "," + TaskTypes.EPIC + "," + status + "," + description + "," + linkedEpicId + ",";
 		}
 }

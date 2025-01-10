@@ -1,6 +1,7 @@
 package ru.yandex.practicum.taskmanager.tasktypes;
 
 import ru.yandex.practicum.taskmanager.util.Status;
+import ru.yandex.practicum.taskmanager.util.TaskTypes;
 
 import java.util.Objects;
 
@@ -9,6 +10,7 @@ public class Task {
 		protected String description;
 		protected int taskId;
 		protected Status status;
+		public TaskTypes type = TaskTypes.TASK;
 
 		public Task(String name, String description, Status status) {
 				this.name = name;
@@ -21,6 +23,10 @@ public class Task {
 				this.description = description;
 				this.taskId = taskId;
 				this.status = status;
+		}
+
+		public TaskTypes getType() {
+				return type;
 		}
 
 		public String getName() {
@@ -57,7 +63,7 @@ public class Task {
 
 		@Override
 		public String toString() {
-				return "ru.yandex.practicum.taskmanager.tasktypes.Task{" + "name='" + name + '\'' + ", description='" + description + '\'' + ", taskId=" + taskId + ", status=" + status + '}';
+				return taskId + "," + TaskTypes.TASK + "," + status + "," + description + ",";
 		}
 
 		@Override
