@@ -3,7 +3,7 @@ package ru.yandex.practicum.taskmanager.tasktypes;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.taskmanager.util.Status;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SubtaskTest {
 		@Test

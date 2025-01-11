@@ -1,10 +1,10 @@
-package ru.yandex.practicum.taskmanager.util;
+package ru.yandex.practicum.taskmanager.managers;
 
-import ru.yandex.practicum.taskmanager.managers.HistoryManager;
-import ru.yandex.practicum.taskmanager.managers.TaskManager;
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
 import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
+import ru.yandex.practicum.taskmanager.util.Managers;
+import ru.yandex.practicum.taskmanager.util.Status;
 
 import java.util.ArrayList;
 import java.util.HashMap;

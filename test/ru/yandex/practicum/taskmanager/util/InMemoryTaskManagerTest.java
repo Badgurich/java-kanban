@@ -9,7 +9,7 @@ import ru.yandex.practicum.taskmanager.tasktypes.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryTaskManagerTest {
 		@Test
@@ -29,8 +29,8 @@ class InMemoryTaskManagerTest {
 		@Test
 		void addAndGetEpicList() {
 				TaskManager tm = Managers.getDefault();
-				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками", Status.NEW);
-				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской", Status.NEW);
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
+				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской");
 				ArrayList<Epic> expectedEpics = new ArrayList<>();
 				expectedEpics.add(epic1);
 				expectedEpics.add(epic2);
@@ -43,8 +43,8 @@ class InMemoryTaskManagerTest {
 		@Test
 		void addAndGetSubtaskList() {
 				TaskManager tm = Managers.getDefault();
-				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками", Status.NEW);
-				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской", Status.NEW);
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
+				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской");
 				tm.addEpic(epic1);
 				tm.addEpic(epic2);
 				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
@@ -76,8 +76,8 @@ class InMemoryTaskManagerTest {
 		@Test
 		void removeAllEpics() {
 				TaskManager tm = Managers.getDefault();
-				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками", Status.NEW);
-				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской", Status.NEW);
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
+				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской");
 				tm.addEpic(epic1);
 				tm.addEpic(epic2);
 				assertEquals(2, tm.getEpicList().size());
@@ -88,8 +88,8 @@ class InMemoryTaskManagerTest {
 		@Test
 		void removeAllSubtasks() {
 				TaskManager tm = Managers.getDefault();
-				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками", Status.NEW);
-				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской", Status.NEW);
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
+				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской");
 				tm.addEpic(epic1);
 				tm.addEpic(epic2);
 				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
@@ -114,7 +114,7 @@ class InMemoryTaskManagerTest {
 		@Test
 		void getEpic() {
 				TaskManager tm = Managers.getDefault();
-				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками", Status.NEW);
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
 				tm.addEpic(epic1);
 				assertEquals(epic1, tm.getEpic(1));
 		}
@@ -122,8 +122,8 @@ class InMemoryTaskManagerTest {
 		@Test
 		void getSubtaskAndCounterTest() {
 				TaskManager tm = Managers.getDefault();
-				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками", Status.NEW);
-				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской", Status.NEW);
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
+				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской");
 				tm.addEpic(epic1);
 				tm.addEpic(epic2);
 				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
@@ -148,8 +148,8 @@ class InMemoryTaskManagerTest {
 		@Test
 		void updateEpic() {
 				TaskManager tm = Managers.getDefault();
-				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками", Status.NEW);
-				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской", 1, Status.NEW);
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
+				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской", 1);
 				tm.addEpic(epic1);
 				tm.updateEpic(epic2);
 				assertEquals(epic2, tm.getEpic(1));
@@ -158,7 +158,7 @@ class InMemoryTaskManagerTest {
 		@Test
 		void updateSubtask() {
 				TaskManager tm = Managers.getDefault();
-				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками", Status.NEW);
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
 				tm.addEpic(epic1);
 				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
 				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 2, Status.NEW, epic1.getTaskId());
@@ -181,7 +181,7 @@ class InMemoryTaskManagerTest {
 		@Test
 		void removeEpic() {
 				TaskManager tm = Managers.getDefault();
-				Epic epic1 = new Epic("Задача 1", "Первая задача", Status.NEW);
+				Epic epic1 = new Epic("Задача 1", "Первая задача");
 				tm.addEpic(epic1);
 				assertEquals(epic1, tm.getEpic(1));
 				tm.removeEpic(1);
@@ -191,7 +191,7 @@ class InMemoryTaskManagerTest {
 		@Test
 		void removeSubtask() {
 				TaskManager tm = Managers.getDefault();
-				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками", Status.NEW);
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
 				tm.addEpic(epic1);
 				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
 				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 2, Status.NEW, epic1.getTaskId());
@@ -204,7 +204,7 @@ class InMemoryTaskManagerTest {
 		@Test
 		void getLinkedSubtasks() {
 				TaskManager tm = Managers.getDefault();
-				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками", Status.NEW);
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
 				tm.addEpic(epic1);
 				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
 				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 2, Status.NEW, epic1.getTaskId());
@@ -222,8 +222,8 @@ class InMemoryTaskManagerTest {
 				ArrayList<Task> expectedHistory = new ArrayList<>();
 				Task task1 = new Task("Задача 1", "Первая задача", Status.NEW);
 				tm.addTask(task1);
-				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками", Status.NEW);
-				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской", Status.NEW);
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
+				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской");
 				tm.addEpic(epic1);
 				tm.addEpic(epic2);
 				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());

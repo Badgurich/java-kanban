@@ -1,7 +1,7 @@
-package ru.yandex.practicum.taskmanager.util;
+package ru.yandex.practicum.taskmanager.managers;
 
-import ru.yandex.practicum.taskmanager.managers.HistoryManager;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
+import ru.yandex.practicum.taskmanager.util.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
