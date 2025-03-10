@@ -3,6 +3,9 @@ package ru.yandex.practicum.taskmanager.tasktypes;
 import ru.yandex.practicum.taskmanager.util.Status;
 import ru.yandex.practicum.taskmanager.util.TaskTypes;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Subtask extends Task {
 		private int linkedEpicId;
 
@@ -13,6 +16,11 @@ public class Subtask extends Task {
 
 		public Subtask(String name, String description, int taskId, Status status, int linkedEpicId) {
 				super(name, description, taskId, status);
+				this.linkedEpicId = linkedEpicId;
+		}
+
+		public Subtask(String name, String description, int taskId, Status status, Duration duration, LocalDateTime startTime, int linkedEpicId) {
+				super(name, description, taskId, status, duration, startTime);
 				this.linkedEpicId = linkedEpicId;
 		}
 
@@ -27,6 +35,6 @@ public class Subtask extends Task {
 
 		@Override
 		public String toString() {
-				return taskId + "," + TaskTypes.EPIC + "," + status + "," + description + "," + linkedEpicId + ",";
+				return taskId + "," + TaskTypes.SUBTASK + "," + name + "," + status + "," + description + "," + duration.toMinutes() + "," + startTime + "," + linkedEpicId + ",";
 		}
 }

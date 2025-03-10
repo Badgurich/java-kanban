@@ -3,13 +3,17 @@ package ru.yandex.practicum.taskmanager.tasktypes;
 import ru.yandex.practicum.taskmanager.util.Status;
 import ru.yandex.practicum.taskmanager.util.TaskTypes;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Task {
+public class Task implements Comparable<Task> {
 		protected String name;
 		protected String description;
 		protected int taskId;
 		protected Status status;
+		protected Duration duration;
+		protected LocalDateTime startTime;
 
 		public Task(String name, String description, Status status) {
 				this.name = name;
@@ -22,6 +26,15 @@ public class Task {
 				this.description = description;
 				this.taskId = taskId;
 				this.status = status;
+		}
+
+		public Task(String name, String description, int taskId, Status status, Duration duration, LocalDateTime startTime) {
+				this.name = name;
+				this.description = description;
+				this.taskId = taskId;
+				this.status = status;
+				this.duration = duration;
+				this.startTime = startTime;
 		}
 
 		public TaskTypes getType() {
@@ -60,9 +73,31 @@ public class Task {
 				this.status = status;
 		}
 
+		public Duration getDuration() {
+				if (duration != null) {
+						return duration;
+				} else return Duration.ofMinutes(0);
+		}
+
+		public void setDuration(Duration duration) {
+				this.duration = duration;
+		}
+
+		public LocalDateTime getStartTime() {
+				return startTime;
+		}
+
+		public void setStartTime(LocalDateTime startTime) {
+				this.startTime = startTime;
+		}
+
+		public LocalDateTime getEndTime() {
+				return startTime.plus(duration);
+		}
+
 		@Override
 		public String toString() {
-				return taskId + "," + TaskTypes.TASK + "," + status + "," + description + ",";
+				return taskId + "," + TaskTypes.TASK + "," + name + "," + status + "," + description + "," + duration.toMinutes() + "," + startTime + ",";
 		}
 
 		@Override
@@ -76,5 +111,10 @@ public class Task {
 		@Override
 		public int hashCode() {
 				return Objects.hashCode(getTaskId());
+		}
+
+		@Override
+		public int compareTo(Task o) {
+				return this.startTime.compareTo(o.startTime);
 		}
 }
