@@ -5,7 +5,6 @@ import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
 
 import java.util.List;
-import java.util.Set;
 
 public interface TaskManager {
 		List<Task> getTaskList();
@@ -48,5 +47,5 @@ public interface TaskManager {
 
 		List<Subtask> getLinkedSubtasks(Epic epic);
 
-		Set<Task> getPrioritizedTasks();
+		List<Task> getPrioritizedTasks();
 }

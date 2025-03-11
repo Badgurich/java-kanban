@@ -1,4 +1,4 @@
 id,type,name,status,description,duration,start time,epic
 1,TASK,Task1,NEW,Description task1,20,2000-01-01T01:00
-2,EPIC,Epic2,DONE,Description epic2,0,2000-01-01T01:51
+2,EPIC,Epic2,DONE,Description epic2,20,2000-01-01T01:51
 3,SUBTASK,Sub Task2,DONE,Description sub task3,20,2000-01-01T01:51,2

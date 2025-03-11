@@ -27,7 +27,9 @@ class FileBackedTaskManagerTest {
 				List<Epic> expectedEpics = new ArrayList<>();
 				List<Subtask> expectedSubtasks = new ArrayList<>();
 				Task task = new Task("Task1", "Description task1", 1, Status.NEW, Duration.ofMinutes(20), LocalDateTime.parse("2000-01-01T01:00"));
-				Epic epic = new Epic("Epic2", "Description epic2", 2, Duration.ofMinutes(20), LocalDateTime.parse("2000-01-01T01:21"));
+				Epic epic = new Epic("Epic2", "Description epic2", 2);
+				epic.setDuration(Duration.ofMinutes(20));
+				epic.setStartTime(LocalDateTime.parse("2000-01-01T01:21"));
 				Subtask subtask = new Subtask("Sub Task2", "Description sub task3", 3, Status.DONE, Duration.ofMinutes(20), LocalDateTime.parse("2000-01-01T01:21"), epic.getTaskId());
 				expectedTasks.add(task);
 				expectedEpics.add(epic);
