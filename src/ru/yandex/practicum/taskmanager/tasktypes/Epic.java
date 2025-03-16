@@ -3,6 +3,8 @@ package ru.yandex.practicum.taskmanager.tasktypes;
 import ru.yandex.practicum.taskmanager.util.Status;
 import ru.yandex.practicum.taskmanager.util.TaskTypes;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Epic extends Task {
@@ -32,6 +34,6 @@ public class Epic extends Task {
 
 		@Override
 		public String toString() {
-				return taskId + "," + TaskTypes.EPIC + "," + status + "," + description + ",";
+				return taskId + "," + TaskTypes.EPIC + "," + name + "," + status + "," + description + "," + duration.toMinutes() + "," + startTime + ",";
 		}
 }

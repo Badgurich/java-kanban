@@ -6,17 +6,20 @@ import ru.yandex.practicum.taskmanager.tasktypes.Epic;
 import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class InMemoryTaskManagerTest {
 		@Test
 		void addAndGetTaskList() {
 				TaskManager tm = Managers.getDefault();
-				Task task1 = new Task("Задача 1", "Первая задача", Status.NEW);
-				Task task2 = new Task("Задача 2", "Вторая задача", Status.NEW);
+				Task task1 = new Task("Задача 1", "Первая задача", 1, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1));
+				Task task2 = new Task("Задача 2", "Вторая задача", 2, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,21));
 				ArrayList<Task> expectedTasks = new ArrayList<>();
 				expectedTasks.add(task1);
 				expectedTasks.add(task2);
@@ -47,9 +50,9 @@ class InMemoryTaskManagerTest {
 				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской");
 				tm.addEpic(epic1);
 				tm.addEpic(epic2);
-				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
-				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", Status.NEW, epic1.getTaskId());
-				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", Status.NEW, epic2.getTaskId());
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 10, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 11, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,2,1), epic1.getTaskId());
+				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", 12, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,3,1) ,epic2.getTaskId());
 				ArrayList<Subtask> expectedSubtasks = new ArrayList<>();
 				expectedSubtasks.add(subtask1);
 				expectedSubtasks.add(subtask2);
@@ -92,9 +95,9 @@ class InMemoryTaskManagerTest {
 				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской");
 				tm.addEpic(epic1);
 				tm.addEpic(epic2);
-				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
-				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", Status.NEW, epic1.getTaskId());
-				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", Status.NEW, epic2.getTaskId());
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 10, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 11, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,2,1), epic1.getTaskId());
+				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", 12, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,3,1) ,epic2.getTaskId());
 				tm.addSubtask(subtask1);
 				tm.addSubtask(subtask2);
 				tm.addSubtask(subtask3);
@@ -106,7 +109,7 @@ class InMemoryTaskManagerTest {
 		@Test
 		void getTask() {
 				TaskManager tm = Managers.getDefault();
-				Task task1 = new Task("Задача 1", "Первая задача", Status.NEW);
+				Task task1 = new Task("Задача 1", "Первая задача", 1, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1));
 				tm.addTask(task1);
 				assertEquals(task1, tm.getTask(1));
 		}
@@ -126,9 +129,9 @@ class InMemoryTaskManagerTest {
 				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской");
 				tm.addEpic(epic1);
 				tm.addEpic(epic2);
-				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
-				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", Status.NEW, epic1.getTaskId());
-				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", Status.NEW, epic2.getTaskId());
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 10, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 11, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,2,1), epic1.getTaskId());
+				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", 12, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,3,1) ,epic2.getTaskId());
 				tm.addSubtask(subtask1);
 				tm.addSubtask(subtask2);
 				tm.addSubtask(subtask3);
@@ -160,8 +163,8 @@ class InMemoryTaskManagerTest {
 				TaskManager tm = Managers.getDefault();
 				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
 				tm.addEpic(epic1);
-				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
-				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 2, Status.NEW, epic1.getTaskId());
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 1, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 2, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,2,1), epic1.getTaskId());
 				tm.addSubtask(subtask1);
 				tm.updateSubtask(subtask2);
 				assertEquals(subtask2, tm.getSubtask(2));
@@ -171,7 +174,7 @@ class InMemoryTaskManagerTest {
 		@Test
 		void removeTask() {
 				TaskManager tm = Managers.getDefault();
-				Task task1 = new Task("Задача 1", "Первая задача", Status.NEW);
+				Task task1 = new Task("Задача 1", "Первая задача", 1, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1));
 				tm.addTask(task1);
 				assertEquals(task1, tm.getTask(1));
 				tm.removeTask(1);
@@ -193,8 +196,8 @@ class InMemoryTaskManagerTest {
 				TaskManager tm = Managers.getDefault();
 				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
 				tm.addEpic(epic1);
-				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
-				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 2, Status.NEW, epic1.getTaskId());
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 1, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 2, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,2,1), epic1.getTaskId());
 				tm.addSubtask(subtask1);
 				tm.addSubtask(subtask2);
 				tm.removeSubtask(2);
@@ -206,8 +209,8 @@ class InMemoryTaskManagerTest {
 				TaskManager tm = Managers.getDefault();
 				Epic epic1 = new Epic("Эпик 1", "Первый эпик с двумя сабтасками");
 				tm.addEpic(epic1);
-				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
-				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 2, Status.NEW, epic1.getTaskId());
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 1, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 2, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,2,1), epic1.getTaskId());
 				tm.addSubtask(subtask1);
 				tm.addSubtask(subtask2);
 				ArrayList<Subtask> expectedSubtasks = new ArrayList<>();
@@ -226,9 +229,9 @@ class InMemoryTaskManagerTest {
 				Epic epic2 = new Epic("Эпик 2", "Второй эпик с одной сабтаской");
 				tm.addEpic(epic1);
 				tm.addEpic(epic2);
-				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", Status.NEW, epic1.getTaskId());
-				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", Status.NEW, epic1.getTaskId());
-				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", Status.NEW, epic2.getTaskId());
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 10, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 11, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,2,1), epic1.getTaskId());
+				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", 12, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,3,1) ,epic2.getTaskId());
 				tm.addSubtask(subtask1);
 				tm.addSubtask(subtask2);
 				tm.addSubtask(subtask3);
@@ -253,6 +256,94 @@ class InMemoryTaskManagerTest {
 				expectedHistory.add(task1);
 				expectedHistory.removeFirst();
 				assertEquals(expectedHistory, tm.getHistory());
+		}
 
+		@Test
+		void epicStatusCalculationAllSubtasksNew() {
+				TaskManager tm = Managers.getDefault();
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с тремя сабтасками");
+				tm.addEpic(epic1);
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 10, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 11, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,2,1), epic1.getTaskId());
+				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", 12, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,3,1) ,epic1.getTaskId());
+				tm.addSubtask(subtask1);
+				tm.addSubtask(subtask2);
+				tm.addSubtask(subtask3);
+				assertEquals(Status.NEW, epic1.getStatus());
+		}
+
+		@Test
+		void epicStatusCalculationAllSubtasksDone() {
+				TaskManager tm = Managers.getDefault();
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с тремя сабтасками");
+				tm.addEpic(epic1);
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 10, Status.DONE, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 11, Status.DONE, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,2,1), epic1.getTaskId());
+				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", 12, Status.DONE, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,3,1) ,epic1.getTaskId());
+				tm.addSubtask(subtask1);
+				tm.addSubtask(subtask2);
+				tm.addSubtask(subtask3);
+				assertEquals(Status.DONE, epic1.getStatus());
+		}
+
+		@Test
+		void epicStatusCalculationOnlyOneSubtaskIsDone() {
+				TaskManager tm = Managers.getDefault();
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с тремя сабтасками");
+				tm.addEpic(epic1);
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 10, Status.DONE, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 11, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,2,1), epic1.getTaskId());
+				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", 12, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,3,1) ,epic1.getTaskId());
+				tm.addSubtask(subtask1);
+				tm.addSubtask(subtask2);
+				tm.addSubtask(subtask3);
+				assertEquals(Status.IN_PROGRESS, epic1.getStatus());
+		}
+
+		@Test
+		void epicStatusCalculationOneSubtaskIsInProgress() {
+				TaskManager tm = Managers.getDefault();
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с тремя сабтасками");
+				tm.addEpic(epic1);
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 10, Status.IN_PROGRESS, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				Subtask subtask2 = new Subtask("Сабтаск 2", "Вторая сабтаска", 11, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,2,1), epic1.getTaskId());
+				Subtask subtask3 = new Subtask("Сабтаск 3", "Третья сабтаска", 12, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,3,1) ,epic1.getTaskId());
+				tm.addSubtask(subtask1);
+				tm.addSubtask(subtask2);
+				tm.addSubtask(subtask3);
+				assertEquals(Status.IN_PROGRESS, epic1.getStatus());
+		}
+
+		@Test
+		void epicDurationAndStartTimeCalculation() {
+				TaskManager tm = Managers.getDefault();
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик с тремя сабтасками");
+				tm.addEpic(epic1);
+				assertEquals(Duration.ofMinutes(0), tm.getEpic(1).getDuration());
+				assertNull(tm.getEpic(1).getStartTime());
+				Subtask subtask1 = new Subtask("Сабтаск 1", "Первая сабтаска", 2, Status.IN_PROGRESS, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1), epic1.getTaskId());
+				tm.addSubtask(subtask1);
+				assertEquals(Duration.ofMinutes(20), tm.getEpic(1).getDuration());
+				assertEquals(LocalDateTime.of(2000,1,1,1,1), tm.getEpic(1).getStartTime());
+		}
+
+		@Test
+		void startTimeValidationTest() {
+				TaskManager tm = Managers.getDefault();
+				Task task1 = new Task("Задача 1", "Первая задача", 1, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1));
+				Task task2 = new Task("Задача 2", "Вторая задача", 2, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,2));
+				Task task3 = new Task("Задача 3", "Третья задача", 3, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,0,59));
+				Task task4 = new Task("Задача 4", "Четвертая задача", 4, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,1));
+				Task task5 = new Task("Задача 5", "Пятая задача", 5, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000,1,1,1,21));
+				ArrayList<Task> expectedTasks = new ArrayList<>();
+				expectedTasks.add(task1);
+				expectedTasks.add(task5);
+				tm.addTask(task1);
+				tm.addTask(task2);
+				tm.addTask(task3);
+				tm.addTask(task4);
+				tm.addTask(task5);
+				List<Task> tasks = tm.getTaskList();
+				assertEquals(expectedTasks, tasks);
 		}
 }

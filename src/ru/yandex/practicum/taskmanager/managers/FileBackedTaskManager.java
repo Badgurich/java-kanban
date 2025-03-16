@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.yandex.practicum.taskmanager.util.TaskTypes.*;
@@ -110,19 +112,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 										+ subtask.getName() + ","
 										+ subtask.getStatus() + ","
 										+ subtask.getDescription() + ","
+										+ subtask.getDuration().toMinutes() + ","
+										+ subtask.getStartTime() + ","
 										+ subtask.getEpicId();
 				} else {
 						return task.getTaskId() + ","
 										+ task.getType() + ","
 										+ task.getName() + ","
 										+ task.getStatus() + ","
-										+ task.getDescription() + ",";
+										+ task.getDescription() + ","
+										+ task.getDuration().toMinutes() + ","
+										+ task.getStartTime();
 				}
 		}
 
 		private void save() {
 				try (Writer w = new FileWriter(saveFile, StandardCharsets.UTF_8)) {
-						w.append("id,type,name,status,description,epic" + "\n");
+						w.append("id,type,name,status,description,duration,start time,epic" + "\n");
 						for (Task task : getTaskList()) {
 								w.append(toString(task)).append("\n");
 						}
@@ -145,22 +151,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 				String name = field[2];
 				Status status = Status.valueOf(field[3]);
 				String description = field[4];
+				Duration duration = Duration.ofMinutes(Integer.parseInt(field[5]));
+				LocalDateTime startTime = LocalDateTime.parse(field[6]);
 				int epicId = -1;
 				if (type.equals(SUBTASK)) {
-						epicId = Integer.parseInt(field[5]);
+						epicId = Integer.parseInt(field[7]);
 				}
-				Task task;
+				Task task = null;
 				switch (type) {
 						case TASK:
-								task = new Task(name, description, id, status);
+								task = new Task(name, description, id, status, duration, startTime);
 								break;
 						case EPIC:
 								task = new Epic(name, description, id);
 								break;
 						case SUBTASK:
 								if (epicId != -1 && epicId != 0) {
-										task = new Subtask(name, description, id, status, epicId);
-								} else {
+										task = new Subtask(name, description, id, status, duration, startTime, epicId);
+								} else if (epicId == -1) {
 										throw new LineParsingException("У Subtask отсутствует epicId");
 								}
 								break;
@@ -192,6 +200,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 						} catch (IOException ex) {
 								throw new ManagerSaveException("Ошибка загрузки из файла", ex);
 						}
+				} catch (ArrayIndexOutOfBoundsException e) {
+						throw new LineParsingException("У Subtask отсутствует epicId");
 				}
 				return tm;
 		}
