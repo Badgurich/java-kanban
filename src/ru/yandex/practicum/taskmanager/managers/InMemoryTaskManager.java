@@ -140,7 +140,7 @@ public class InMemoryTaskManager implements TaskManager {
 
 		@Override
 		public void removeTask(int id) {
-				sortedTaskSet.remove(getTask(id));
+				sortedTaskSet.remove(taskList.remove(id));
 				taskList.remove(id);
 				history.remove(id);
 		}
