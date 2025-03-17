@@ -120,9 +120,16 @@ public class InMemoryTaskManager implements TaskManager {
 
 		@Override
 		public void updateTask(Task task) {
-				if (taskList.containsKey(task.getTaskId()) && sortedTaskSet.contains(task)) {
+				if (taskList.containsKey(task.getTaskId())) {
 						validateStartTime(task);
+						Task oldTask = taskList.get(task.getTaskId());
+						if (oldTask.getStartTime() != null) {
+								sortedTaskSet.remove(oldTask);
+						}
 						taskList.put(task.getTaskId(), task);
+						if (task.getStartTime() != null) {
+								sortedTaskSet.add(task);
+						}
 				}
 		}
 
@@ -130,6 +137,9 @@ public class InMemoryTaskManager implements TaskManager {
 		public void updateEpic(Epic epic) {
 				if (epicList.containsKey(epic.getTaskId())) {
 						epicList.put(epic.getTaskId(), epic);
+						updateEpicStatus(epic);
+						updateEpicDuration(epic);
+						updateEpicStartTime(epic);
 				}
 		}
 
@@ -137,11 +147,19 @@ public class InMemoryTaskManager implements TaskManager {
 		public void updateSubtask(Subtask subtask) throws TimeValidationException, LinkedEpicValidationException {
 				validateStartTime(subtask);
 				validateLinkedEpic(subtask);
+				Subtask oldSubtask = subtaskList.get(subtask.getTaskId());
+				Epic linkedEpic = getEpicLocal(subtask.getEpicId());
+				if (oldSubtask != null && oldSubtask.getStartTime() != null) {
+						sortedTaskSet.remove(oldSubtask);
+				}
 				subtaskList.put(subtask.getTaskId(), subtask);
-				updateLinkedSubtasks(getEpicLocal(subtask.getEpicId()));
-				updateEpicStatus(getEpicLocal(subtask.getEpicId()));
-				updateEpicDuration(getEpicLocal(subtask.getEpicId()));
-				updateEpicStartTime(getEpicLocal(subtask.getEpicId()));
+				if (subtask.getStartTime() != null) {
+						sortedTaskSet.add(subtask);
+				}
+				updateLinkedSubtasks(linkedEpic);
+				updateEpicStatus(linkedEpic);
+				updateEpicDuration(linkedEpic);
+				updateEpicStartTime(linkedEpic);
 		}
 
 		@Override
@@ -260,18 +278,18 @@ public class InMemoryTaskManager implements TaskManager {
 								.filter(t -> (task.getStartTime().toEpochSecond(offset) - t.getEndTime().toEpochSecond(offset)) * (t.getStartTime().toEpochSecond(offset) - task.getEndTime().toEpochSecond(offset)) > 0)
 								.findFirst();
 				if (optionalTask.isPresent()) {
+						if (optionalTask.get().getTaskId() == task.getTaskId()) {
+								return;
+						}
 						throw new TimeValidationException("Время добавляемой задачи пересекается с задачей c id=" + optionalTask.get().getTaskId());
 				}
 		}
 
 		private void validateLinkedEpic(Subtask subtask) {
 				int linkedEpicId = subtask.getEpicId();
-				Optional<Epic> optionalEpic = getEpicList()
-								.stream()
-								.filter(e -> e.getTaskId() == linkedEpicId) // для int
-								.findFirst();
+				Epic epic = epicList.get(linkedEpicId);
 
-				if (optionalEpic.isEmpty()) {
+				if (epic == null) {
 						throw new LinkedEpicValidationException("Отсутствует эпик с id=" + linkedEpicId);
 				}
 		}

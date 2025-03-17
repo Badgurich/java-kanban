@@ -1,33 +1,22 @@
 package ru.yandex.practicum.taskmanager.util.server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import ru.yandex.practicum.taskmanager.exceptions.TimeValidationException;
 import ru.yandex.practicum.taskmanager.managers.TaskManager;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
-import ru.yandex.practicum.taskmanager.util.json.DurationAdapter;
-import ru.yandex.practicum.taskmanager.util.json.LocalDateTimeAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.yandex.practicum.taskmanager.util.server.EndpointGetter.getEndpoint;
 
 public class TasksHandler extends BaseHttpHandler implements HttpHandler {
-		private final TaskManager tm;
-		Gson gson = new GsonBuilder()
-						.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-						.registerTypeAdapter(Duration.class, new DurationAdapter())
-						.create();
 
 		public TasksHandler(TaskManager tm) {
-				this.tm = tm;
+				super(tm);
 		}
 
 		@Override
@@ -47,12 +36,16 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
 								handlePostTasks(exchange);
 								break;
 						}
+						case POST_TASKS_ID: {
+								handlePostTasksId(exchange);
+								break;
+						}
 						case DELETE_TASKS_ID: {
 								handleDeleteTasks(exchange);
 								break;
 						}
 						default:
-								sendNotFound(exchange, gson.toJson(new BaseResponse("404", "Нет такого эндпоинта.", exchange)));
+								sendMethodNotAllowed(exchange, gson.toJson(new BaseResponse("405", "Нет такого эндпоинта.", exchange)));
 				}
 		}
 
@@ -83,8 +76,30 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
 						InputStream inputStream = exchange.getRequestBody();
 						String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 						Task task = gson.fromJson(body, Task.class);
-						tm.addTask(task);
-						sendCreated(exchange, gson.toJson(new BaseResponse("201", "Задача создана.")));
+						if (!tm.getTaskList().contains(task)) {
+								tm.addTask(task);
+								sendCreated(exchange, gson.toJson(new BaseResponse("201", "Задача создана.")));
+						} else {
+								sendBadRequest(exchange, gson.toJson(new BaseResponse("400", "Задача с таким id уже существует")));
+						}
+				} catch (TimeValidationException e) {
+						sendHasInteractions(exchange, gson.toJson(new BaseResponse("406", e.getMessage())));
+				}
+		}
+
+		private void handlePostTasksId(HttpExchange exchange) throws IOException, TimeValidationException {
+				try {
+						String[] splitPath = exchange.getRequestURI().getPath().split("/");
+						int id = Integer.parseInt(splitPath[2]);
+						InputStream inputStream = exchange.getRequestBody();
+						String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+						Task task = gson.fromJson(body, Task.class);
+						if (tm.getTaskList().contains(task) && id == task.getTaskId()) {
+								tm.updateTask(task);
+								sendCreated(exchange, gson.toJson(new BaseResponse("201", "Задача обновлена.")));
+						} else {
+								sendNotFound(exchange, gson.toJson(new BaseResponse("404", "Задача не найдена.")));
+						}
 				} catch (TimeValidationException e) {
 						sendHasInteractions(exchange, gson.toJson(new BaseResponse("406", e.getMessage())));
 				}

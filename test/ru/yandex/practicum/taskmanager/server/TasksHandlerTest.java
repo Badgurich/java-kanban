@@ -1,17 +1,8 @@
 package ru.yandex.practicum.taskmanager.server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.taskmanager.managers.TaskManager;
-import ru.yandex.practicum.taskmanager.servers.HttpTaskServer;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
-import ru.yandex.practicum.taskmanager.util.Managers;
 import ru.yandex.practicum.taskmanager.util.Status;
-import ru.yandex.practicum.taskmanager.util.json.DurationAdapter;
-import ru.yandex.practicum.taskmanager.util.json.LocalDateTimeAdapter;
 import ru.yandex.practicum.taskmanager.util.json.TaskListTypeToken;
 
 import java.io.IOException;
@@ -25,26 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TasksHandlerTest {
-		TaskManager tm = Managers.getDefault();
-		HttpTaskServer server = new HttpTaskServer(tm);
-		Gson gson = new GsonBuilder()
-						.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-						.registerTypeAdapter(Duration.class, new DurationAdapter())
-						.create();
-
-		@BeforeEach
-		void setUp() throws IOException {
-				tm.removeAllTasks();
-				tm.removeAllSubtasks();
-				tm.removeAllEpics();
-				server.start();
-		}
-
-		@AfterEach
-		void tearDown() {
-				server.stop();
-		}
+class TasksHandlerTest extends HandlerSetUpAndTearDown {
 
 		@Test
 		void testAddTask() throws IOException, InterruptedException {
@@ -59,6 +31,23 @@ class TasksHandlerTest {
 				assertNotNull(tasksFromManager, "Задачи не возвращаются");
 				assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
 				assertEquals("Задача 1", tasksFromManager.getFirst().getName(), "Некорректное имя задачи");
+		}
+
+		@Test
+		void testUpdateTask() throws IOException, InterruptedException {
+				Task task1 = new Task("Задача 1", "Первая задача", 1, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000, 1, 1, 1, 1));
+				Task task2 = new Task("Задача 2", "Первая задача+", 1, Status.IN_PROGRESS, Duration.ofMinutes(30), LocalDateTime.of(2001, 1, 1, 1, 1));
+				tm.addTask(task1);
+				String taskJson = gson.toJson(task2);
+				HttpClient client = HttpClient.newHttpClient();
+				URI url = URI.create("http://localhost:8080/tasks/1");
+				HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
+				HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+				assertEquals(201, response.statusCode());
+				List<Task> tasksFromManager = tm.getTaskList();
+				assertNotNull(tasksFromManager, "Задачи не возвращаются");
+				assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
+				assertEquals("Задача 2", tasksFromManager.getFirst().getName(), "Некорректное имя задачи");
 		}
 
 		@Test

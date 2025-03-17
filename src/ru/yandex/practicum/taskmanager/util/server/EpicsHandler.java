@@ -1,33 +1,23 @@
 package ru.yandex.practicum.taskmanager.util.server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import ru.yandex.practicum.taskmanager.exceptions.TimeValidationException;
 import ru.yandex.practicum.taskmanager.managers.TaskManager;
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
-import ru.yandex.practicum.taskmanager.util.json.DurationAdapter;
-import ru.yandex.practicum.taskmanager.util.json.LocalDateTimeAdapter;
+import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.yandex.practicum.taskmanager.util.server.EndpointGetter.getEndpoint;
 
 public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
-		private final TaskManager tm;
-		Gson gson = new GsonBuilder()
-						.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-						.registerTypeAdapter(Duration.class, new DurationAdapter())
-						.create();
 
 		public EpicsHandler(TaskManager tm) {
-				this.tm = tm;
+				super(tm);
 		}
 
 		@Override
@@ -43,8 +33,16 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
 								handleGetEpicsById(exchange);
 								break;
 						}
+						case GET_EPICS_ID_SUBTASKS: {
+								handleGetEpicsLinkedSubtasks(exchange);
+								break;
+						}
 						case POST_EPICS: {
 								handlePostEpics(exchange);
+								break;
+						}
+						case POST_EPICS_ID: {
+								handlePostEpicsId(exchange);
 								break;
 						}
 						case DELETE_EPICS_ID: {
@@ -52,7 +50,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
 								break;
 						}
 						default:
-								sendNotFound(exchange, gson.toJson(new BaseResponse("404", "Нет такого эндпоинта.", exchange)));
+								sendMethodNotAllowed(exchange, gson.toJson(new BaseResponse("405", "Нет такого эндпоинта.", exchange)));
 				}
 		}
 
@@ -78,13 +76,48 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
 				}
 		}
 
+		private void handleGetEpicsLinkedSubtasks(HttpExchange exchange) throws IOException {
+				String[] splitPath = exchange.getRequestURI().getPath().split("/");
+				int id = Integer.parseInt(splitPath[2]);
+				Epic epic = tm.getEpic(id);
+				if (epic != null) {
+						List<Subtask> linkedSubtasks = tm.getLinkedSubtasks(epic);
+						String response = gson.toJson(linkedSubtasks);
+						sendText(exchange, response);
+				} else {
+						sendNotFound(exchange, gson.toJson(new BaseResponse("404", "Задача не найдена.")));
+				}
+		}
+
 		private void handlePostEpics(HttpExchange exchange) throws IOException, TimeValidationException {
 				try {
 						InputStream inputStream = exchange.getRequestBody();
 						String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 						Epic epic = gson.fromJson(body, Epic.class);
-						tm.addEpic(epic);
-						sendCreated(exchange, gson.toJson(new BaseResponse("201", "Задача создана.")));
+						if (!tm.getEpicList().contains(epic)) {
+								tm.addEpic(epic);
+								sendCreated(exchange, gson.toJson(new BaseResponse("201", "Задача создана.")));
+						} else {
+								sendBadRequest(exchange, gson.toJson(new BaseResponse("400", "Задача с таким id уже существует")));
+						}
+				} catch (TimeValidationException e) {
+						sendHasInteractions(exchange, gson.toJson(new BaseResponse("406", e.getMessage())));
+				}
+		}
+
+		private void handlePostEpicsId(HttpExchange exchange) throws IOException, TimeValidationException {
+				try {
+						String[] splitPath = exchange.getRequestURI().getPath().split("/");
+						int id = Integer.parseInt(splitPath[2]);
+						InputStream inputStream = exchange.getRequestBody();
+						String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+						Epic epic = gson.fromJson(body, Epic.class);
+						if (tm.getEpicList().contains(epic) && id == epic.getTaskId()) {
+								tm.updateEpic(epic);
+								sendCreated(exchange, gson.toJson(new BaseResponse("201", "Задача обновлена.")));
+						} else {
+								sendNotFound(exchange, gson.toJson(new BaseResponse("404", "Задача не найдена.")));
+						}
 				} catch (TimeValidationException e) {
 						sendHasInteractions(exchange, gson.toJson(new BaseResponse("406", e.getMessage())));
 				}

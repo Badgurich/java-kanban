@@ -1,19 +1,10 @@
 package ru.yandex.practicum.taskmanager.server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.taskmanager.managers.TaskManager;
-import ru.yandex.practicum.taskmanager.servers.HttpTaskServer;
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
 import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
-import ru.yandex.practicum.taskmanager.util.Managers;
 import ru.yandex.practicum.taskmanager.util.Status;
-import ru.yandex.practicum.taskmanager.util.json.DurationAdapter;
-import ru.yandex.practicum.taskmanager.util.json.LocalDateTimeAdapter;
 import ru.yandex.practicum.taskmanager.util.json.SubtaskListTypeToken;
 
 import java.io.IOException;
@@ -27,26 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SubtasksHandlerTest {
-		TaskManager tm = Managers.getDefault();
-		HttpTaskServer server = new HttpTaskServer(tm);
-		Gson gson = new GsonBuilder()
-						.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-						.registerTypeAdapter(Duration.class, new DurationAdapter())
-						.create();
-
-		@BeforeEach
-		void setUp() throws IOException {
-				tm.removeAllTasks();
-				tm.removeAllSubtasks();
-				tm.removeAllEpics();
-				server.start();
-		}
-
-		@AfterEach
-		void tearDown() {
-				server.stop();
-		}
+class SubtasksHandlerTest extends HandlerSetUpAndTearDown {
 
 		@Test
 		void testAddSubTask() throws IOException, InterruptedException {
@@ -63,6 +35,25 @@ class SubtasksHandlerTest {
 				assertNotNull(tasksFromManager, "Задачи не возвращаются");
 				assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
 				assertEquals("Сабтаск 1", tasksFromManager.getFirst().getName(), "Некорректное имя задачи");
+		}
+
+		@Test
+		void testUpdateSubtask() throws IOException, InterruptedException {
+				Epic epic1 = new Epic("Эпик 1", "Первый эпик");
+				tm.addEpic(epic1);
+				Subtask subtask1 = new Subtask("Задача 1", "Первая задача", 2, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000, 1, 1, 1, 1), 1);
+				Subtask subtask2 = new Subtask("Задача 2", "Первая задача+", 2, Status.IN_PROGRESS, Duration.ofMinutes(30), LocalDateTime.of(2001, 1, 1, 1, 1), 1);
+				tm.addSubtask(subtask1);
+				String taskJson = gson.toJson(subtask2);
+				HttpClient client = HttpClient.newHttpClient();
+				URI url = URI.create("http://localhost:8080/subtasks/2");
+				HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
+				HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+				assertEquals(201, response.statusCode());
+				List<Subtask> tasksFromManager = tm.getSubtaskList();
+				assertNotNull(tasksFromManager, "Задачи не возвращаются");
+				assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
+				assertEquals("Задача 2", tasksFromManager.getFirst().getName(), "Некорректное имя задачи");
 		}
 
 		@Test

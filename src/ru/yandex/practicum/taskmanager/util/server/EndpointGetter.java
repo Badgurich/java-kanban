@@ -37,11 +37,20 @@ public class EndpointGetter {
 						if (pathParts.length == 2 && pathParts[1].equals("tasks")) {
 								return Endpoint.POST_TASKS;
 						}
+						if (pathParts.length == 3 && pathParts[1].equals("tasks")) {
+								return Endpoint.POST_TASKS_ID;
+						}
 						if (pathParts.length == 2 && pathParts[1].equals("subtasks")) {
 								return Endpoint.POST_SUBTASKS;
 						}
+						if (pathParts.length == 3 && pathParts[1].equals("subtasks")) {
+								return Endpoint.POST_SUBTASKS_ID;
+						}
 						if (pathParts.length == 2 && pathParts[1].equals("epics")) {
 								return Endpoint.POST_EPICS;
+						}
+						if (pathParts.length == 3 && pathParts[1].equals("epics")) {
+								return Endpoint.POST_EPICS_ID;
 						}
 				}
 				if (requestMethod.equals("DELETE")) {
