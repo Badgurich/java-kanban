@@ -18,35 +18,35 @@ import java.util.Objects;
 import static ru.yandex.practicum.taskmanager.util.server.EndpointGetter.getEndpoint;
 
 public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
-    private final TaskManager tm;
-    Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .create();
+		private final TaskManager tm;
+		Gson gson = new GsonBuilder()
+						.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+						.registerTypeAdapter(Duration.class, new DurationAdapter())
+						.create();
 
-    public HistoryHandler(TaskManager tm) {
-        this.tm = tm;
-    }
+		public HistoryHandler(TaskManager tm) {
+				this.tm = tm;
+		}
 
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+				Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
 
-        if (Objects.requireNonNull(endpoint) == Endpoint.GET_HISTORY) {
-            handleGetHistory(exchange);
-        } else {
-            sendNotFound(exchange, gson.toJson(new BaseResponse("404", "Нет такого эндпоинта.", exchange)));
-        }
-    }
+				if (Objects.requireNonNull(endpoint) == Endpoint.GET_HISTORY) {
+						handleGetHistory(exchange);
+				} else {
+						sendNotFound(exchange, gson.toJson(new BaseResponse("404", "Нет такого эндпоинта.", exchange)));
+				}
+		}
 
-    private void handleGetHistory(HttpExchange exchange) throws IOException {
-        List<Task> history = tm.getHistory();
-        String response = gson.toJson(history);
-        if (!history.isEmpty()) {
-            sendText(exchange, response);
-        } else {
-            sendNotFound(exchange, gson.toJson(new BaseResponse("404", "История пуста.")));
-        }
-    }
+		private void handleGetHistory(HttpExchange exchange) throws IOException {
+				List<Task> history = tm.getHistory();
+				String response = gson.toJson(history);
+				if (!history.isEmpty()) {
+						sendText(exchange, response);
+				} else {
+						sendNotFound(exchange, gson.toJson(new BaseResponse("404", "История пуста.")));
+				}
+		}
 }
 
