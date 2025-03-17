@@ -6,10 +6,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import ru.yandex.practicum.taskmanager.exceptions.TimeValidationException;
 import ru.yandex.practicum.taskmanager.managers.TaskManager;
-import ru.yandex.practicum.taskmanager.tasktypes.Epic;
-import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
-import ru.yandex.practicum.taskmanager.util.Status;
 import ru.yandex.practicum.taskmanager.util.json.DurationAdapter;
 import ru.yandex.practicum.taskmanager.util.json.LocalDateTimeAdapter;
 
@@ -31,12 +28,6 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
 
     public TasksHandler(TaskManager tm) {
         this.tm = tm;
-        Epic epic1 = new Epic("Эпик 1", "Первый эпик", 1);
-        Subtask subtask1 = new Subtask("Сабтаска 1", "Вторая задача", 2, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000, 2, 1, 1, 1),1);
-        tm.addEpic(epic1);
-        tm.addSubtask(subtask1);
-        Task task1 = new Task("Задача 1", "Третья задача", 3, Status.NEW, Duration.ofMinutes(20), LocalDateTime.of(2000, 1, 1, 1, 1));
-        tm.addTask(task1);
     }
 
     @Override

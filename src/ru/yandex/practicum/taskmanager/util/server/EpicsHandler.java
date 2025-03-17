@@ -7,7 +7,6 @@ import com.sun.net.httpserver.HttpHandler;
 import ru.yandex.practicum.taskmanager.exceptions.TimeValidationException;
 import ru.yandex.practicum.taskmanager.managers.TaskManager;
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
-import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.util.json.DurationAdapter;
 import ru.yandex.practicum.taskmanager.util.json.LocalDateTimeAdapter;
 
@@ -84,7 +83,6 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
             InputStream inputStream = exchange.getRequestBody();
             String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             Epic epic = gson.fromJson(body, Epic.class);
-            System.out.println(epic);
             tm.addEpic(epic);
             sendCreated(exchange, gson.toJson(new BaseResponse("201", "Задача создана.")));
         } catch (TimeValidationException e) {

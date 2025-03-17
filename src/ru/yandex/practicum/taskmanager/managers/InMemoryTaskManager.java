@@ -43,6 +43,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeAllTasks() {
         taskList.clear();
+        history.getHistory().removeIf(task -> task.getType() == TaskTypes.TASK);
         sortedTaskSet.removeIf(task -> task.getType() == TaskTypes.TASK);
     }
 
@@ -50,6 +51,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeAllEpics() {
         epicList.clear();
         subtaskList.clear();
+        history.getHistory().removeIf(task -> task.getType() == TaskTypes.EPIC);
+        history.getHistory().removeIf(task -> task.getType() == TaskTypes.SUBTASK);
         sortedTaskSet.removeIf(task -> task.getType() == TaskTypes.SUBTASK);
     }
 
@@ -61,6 +64,7 @@ public class InMemoryTaskManager implements TaskManager {
             updateEpicDuration(epic);
             updateEpicStartTime(epic);
         });
+        history.getHistory().removeIf(task -> task.getType() == TaskTypes.SUBTASK);
         sortedTaskSet.removeIf(task -> task.getType() == TaskTypes.SUBTASK);
     }
 
@@ -101,17 +105,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubtask(Subtask subtask) throws TimeValidationException, LinkedEpicValidationException {
-            validateStartTime(subtask);
-            validateLinkedEpic(subtask);
-            subtask.setTaskId(idCounter++);
-            subtaskList.put(subtask.getTaskId(), subtask);
-            getEpicLocal(subtask.getEpicId()).linkedSubtasks.add(subtask);
-            updateEpicStatus(getEpicLocal(subtask.getEpicId()));
-            updateEpicDuration(getEpicLocal(subtask.getEpicId()));
-            updateEpicStartTime(getEpicLocal(subtask.getEpicId()));
-            if (subtask.getStartTime() != null) {
-                sortedTaskSet.add(subtask);
-            }
+        validateStartTime(subtask);
+        validateLinkedEpic(subtask);
+        subtask.setTaskId(idCounter++);
+        subtaskList.put(subtask.getTaskId(), subtask);
+        getEpicLocal(subtask.getEpicId()).linkedSubtasks.add(subtask);
+        updateEpicStatus(getEpicLocal(subtask.getEpicId()));
+        updateEpicDuration(getEpicLocal(subtask.getEpicId()));
+        updateEpicStartTime(getEpicLocal(subtask.getEpicId()));
+        if (subtask.getStartTime() != null) {
+            sortedTaskSet.add(subtask);
+        }
     }
 
     @Override
@@ -131,13 +135,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask subtask) throws TimeValidationException, LinkedEpicValidationException {
-            validateStartTime(subtask);
-            validateLinkedEpic(subtask);
-            subtaskList.put(subtask.getTaskId(), subtask);
-            updateLinkedSubtasks(getEpicLocal(subtask.getEpicId()));
-            updateEpicStatus(getEpicLocal(subtask.getEpicId()));
-            updateEpicDuration(getEpicLocal(subtask.getEpicId()));
-            updateEpicStartTime(getEpicLocal(subtask.getEpicId()));
+        validateStartTime(subtask);
+        validateLinkedEpic(subtask);
+        subtaskList.put(subtask.getTaskId(), subtask);
+        updateLinkedSubtasks(getEpicLocal(subtask.getEpicId()));
+        updateEpicStatus(getEpicLocal(subtask.getEpicId()));
+        updateEpicDuration(getEpicLocal(subtask.getEpicId()));
+        updateEpicStartTime(getEpicLocal(subtask.getEpicId()));
     }
 
     @Override

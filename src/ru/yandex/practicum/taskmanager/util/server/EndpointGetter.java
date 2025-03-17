@@ -55,6 +55,6 @@ public class EndpointGetter {
                 return Endpoint.DELETE_EPICS_ID;
             }
         }
-            return Endpoint.UNKNOWN;
+        return Endpoint.UNKNOWN;
     }
 }

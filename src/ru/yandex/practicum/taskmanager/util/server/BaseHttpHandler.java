@@ -1,6 +1,7 @@
 package ru.yandex.practicum.taskmanager.util.server;
 
 import com.sun.net.httpserver.HttpExchange;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -28,6 +29,7 @@ public class BaseHttpHandler {
         h.getResponseBody().write(resp);
         h.close();
     }
+
     protected void sendCreated(HttpExchange h, String text) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
