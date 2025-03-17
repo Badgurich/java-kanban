@@ -1,5 +1,7 @@
 package ru.yandex.practicum.taskmanager.managers;
 
+import ru.yandex.practicum.taskmanager.exceptions.LinkedEpicValidationException;
+import ru.yandex.practicum.taskmanager.exceptions.TimeValidationException;
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
 import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
@@ -41,6 +43,7 @@ public class InMemoryTaskManager implements TaskManager {
 		@Override
 		public void removeAllTasks() {
 				taskList.clear();
+				history.getHistory().removeIf(task -> task.getType() == TaskTypes.TASK);
 				sortedTaskSet.removeIf(task -> task.getType() == TaskTypes.TASK);
 		}
 
@@ -48,6 +51,8 @@ public class InMemoryTaskManager implements TaskManager {
 		public void removeAllEpics() {
 				epicList.clear();
 				subtaskList.clear();
+				history.getHistory().removeIf(task -> task.getType() == TaskTypes.EPIC);
+				history.getHistory().removeIf(task -> task.getType() == TaskTypes.SUBTASK);
 				sortedTaskSet.removeIf(task -> task.getType() == TaskTypes.SUBTASK);
 		}
 
@@ -59,6 +64,7 @@ public class InMemoryTaskManager implements TaskManager {
 						updateEpicDuration(epic);
 						updateEpicStartTime(epic);
 				});
+				history.getHistory().removeIf(task -> task.getType() == TaskTypes.SUBTASK);
 				sortedTaskSet.removeIf(task -> task.getType() == TaskTypes.SUBTASK);
 		}
 
@@ -81,13 +87,12 @@ public class InMemoryTaskManager implements TaskManager {
 		}
 
 		@Override
-		public void addTask(Task task) {
-				if (isStartTimeValid(task)) {
-						task.setTaskId(idCounter++);
-						taskList.put(task.getTaskId(), task);
-						if (task.getStartTime() != null) {
-								sortedTaskSet.add(task);
-						}
+		public void addTask(Task task) throws TimeValidationException {
+				validateStartTime(task);
+				task.setTaskId(idCounter++);
+				taskList.put(task.getTaskId(), task);
+				if (task.getStartTime() != null) {
+						sortedTaskSet.add(task);
 				}
 		}
 
@@ -99,24 +104,32 @@ public class InMemoryTaskManager implements TaskManager {
 		}
 
 		@Override
-		public void addSubtask(Subtask subtask) {
-				if (epicList.containsKey(subtask.getEpicId()) && isStartTimeValid(subtask)) {
-						subtask.setTaskId(idCounter++);
-						subtaskList.put(subtask.getTaskId(), subtask);
-						getEpicLocal(subtask.getEpicId()).linkedSubtasks.add(subtask);
-						updateEpicStatus(getEpicLocal(subtask.getEpicId()));
-						updateEpicDuration(getEpicLocal(subtask.getEpicId()));
-						updateEpicStartTime(getEpicLocal(subtask.getEpicId()));
-						if (subtask.getStartTime() != null) {
-								sortedTaskSet.add(subtask);
-						}
+		public void addSubtask(Subtask subtask) throws TimeValidationException, LinkedEpicValidationException {
+				validateStartTime(subtask);
+				validateLinkedEpic(subtask);
+				subtask.setTaskId(idCounter++);
+				subtaskList.put(subtask.getTaskId(), subtask);
+				getEpicLocal(subtask.getEpicId()).linkedSubtasks.add(subtask);
+				updateEpicStatus(getEpicLocal(subtask.getEpicId()));
+				updateEpicDuration(getEpicLocal(subtask.getEpicId()));
+				updateEpicStartTime(getEpicLocal(subtask.getEpicId()));
+				if (subtask.getStartTime() != null) {
+						sortedTaskSet.add(subtask);
 				}
 		}
 
 		@Override
 		public void updateTask(Task task) {
-				if (taskList.containsKey(task.getTaskId()) && sortedTaskSet.contains(task) && isStartTimeValid(task)) {
+				if (taskList.containsKey(task.getTaskId())) {
+						validateStartTime(task);
+						Task oldTask = taskList.get(task.getTaskId());
+						if (oldTask.getStartTime() != null) {
+								sortedTaskSet.remove(oldTask);
+						}
 						taskList.put(task.getTaskId(), task);
+						if (task.getStartTime() != null) {
+								sortedTaskSet.add(task);
+						}
 				}
 		}
 
@@ -124,18 +137,29 @@ public class InMemoryTaskManager implements TaskManager {
 		public void updateEpic(Epic epic) {
 				if (epicList.containsKey(epic.getTaskId())) {
 						epicList.put(epic.getTaskId(), epic);
+						updateEpicStatus(epic);
+						updateEpicDuration(epic);
+						updateEpicStartTime(epic);
 				}
 		}
 
 		@Override
-		public void updateSubtask(Subtask subtask) {
-				if (subtaskList.containsKey(subtask.getTaskId()) && isStartTimeValid(subtask)) {
-						subtaskList.put(subtask.getTaskId(), subtask);
-						updateLinkedSubtasks(getEpicLocal(subtask.getEpicId()));
-						updateEpicStatus(getEpicLocal(subtask.getEpicId()));
-						updateEpicDuration(getEpicLocal(subtask.getEpicId()));
-						updateEpicStartTime(getEpicLocal(subtask.getEpicId()));
+		public void updateSubtask(Subtask subtask) throws TimeValidationException, LinkedEpicValidationException {
+				validateStartTime(subtask);
+				validateLinkedEpic(subtask);
+				Subtask oldSubtask = subtaskList.get(subtask.getTaskId());
+				Epic linkedEpic = getEpicLocal(subtask.getEpicId());
+				if (oldSubtask != null && oldSubtask.getStartTime() != null) {
+						sortedTaskSet.remove(oldSubtask);
 				}
+				subtaskList.put(subtask.getTaskId(), subtask);
+				if (subtask.getStartTime() != null) {
+						sortedTaskSet.add(subtask);
+				}
+				updateLinkedSubtasks(linkedEpic);
+				updateEpicStatus(linkedEpic);
+				updateEpicDuration(linkedEpic);
+				updateEpicStartTime(linkedEpic);
 		}
 
 		@Override
@@ -239,7 +263,7 @@ public class InMemoryTaskManager implements TaskManager {
 						if (optionalSubtask.isPresent()) {
 								epicStartTime = optionalSubtask.get().getStartTime();
 						}
-								epic.setStartTime(epicStartTime);
+						epic.setStartTime(epicStartTime);
 				}
 		}
 
@@ -248,13 +272,25 @@ public class InMemoryTaskManager implements TaskManager {
 				return new ArrayList<>(sortedTaskSet);
 		}
 
-		private boolean isStartTimeValid(Task task) {
-				boolean valid;
+		private void validateStartTime(Task task) {
 				Optional<Task> optionalTask = getPrioritizedTasks()
 								.stream()
 								.filter(t -> (task.getStartTime().toEpochSecond(offset) - t.getEndTime().toEpochSecond(offset)) * (t.getStartTime().toEpochSecond(offset) - task.getEndTime().toEpochSecond(offset)) > 0)
 								.findFirst();
-				valid = optionalTask.isEmpty();
-				return valid;
+				if (optionalTask.isPresent()) {
+						if (optionalTask.get().getTaskId() == task.getTaskId()) {
+								return;
+						}
+						throw new TimeValidationException("Время добавляемой задачи пересекается с задачей c id=" + optionalTask.get().getTaskId());
+				}
+		}
+
+		private void validateLinkedEpic(Subtask subtask) {
+				int linkedEpicId = subtask.getEpicId();
+				Epic epic = epicList.get(linkedEpicId);
+
+				if (epic == null) {
+						throw new LinkedEpicValidationException("Отсутствует эпик с id=" + linkedEpicId);
+				}
 		}
 }

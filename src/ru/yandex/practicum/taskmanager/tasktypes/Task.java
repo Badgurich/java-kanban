@@ -15,6 +15,9 @@ public class Task implements Comparable<Task> {
 		protected Duration duration;
 		protected LocalDateTime startTime;
 
+		public Task() {
+		}
+
 		public Task(String name, String description, Status status) {
 				this.name = name;
 				this.description = description;
@@ -97,7 +100,7 @@ public class Task implements Comparable<Task> {
 
 		@Override
 		public String toString() {
-				return taskId + "," + TaskTypes.TASK + "," + name + "," + status + "," + description + "," + duration.toMinutes() + "," + startTime + ",";
+				return taskId + "," + TaskTypes.TASK + "," + name + "," + status + "," + description + "," + getDuration().toMinutes() + "," + getStartTime() + ",";
 		}
 
 		@Override
