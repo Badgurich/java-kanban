@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 public class Epic extends Task {
 
+        public Epic() {}
+
 		public ArrayList<Subtask> linkedSubtasks = new ArrayList<>();
 
 		public Epic(String name, String description) {
@@ -33,7 +35,8 @@ public class Epic extends Task {
 		}
 
 		@Override
-		public String toString() {
-				return taskId + "," + TaskTypes.EPIC + "," + name + "," + status + "," + description + "," + duration.toMinutes() + "," + startTime + ",";
-		}
+        public String toString() {
+            return taskId + "," + TaskTypes.EPIC + "," + name + "," + status + "," + description + ","
+                    + getDuration().toMinutes() + "," + getStartTime() + ",";
+        }
 }

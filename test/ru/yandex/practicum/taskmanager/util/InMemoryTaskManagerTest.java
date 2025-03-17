@@ -1,18 +1,21 @@
 package ru.yandex.practicum.taskmanager.util;
 
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.taskmanager.exceptions.ManagerSaveException;
+import ru.yandex.practicum.taskmanager.exceptions.TimeValidationException;
+import ru.yandex.practicum.taskmanager.managers.FileBackedTaskManager;
 import ru.yandex.practicum.taskmanager.managers.TaskManager;
 import ru.yandex.practicum.taskmanager.tasktypes.Epic;
 import ru.yandex.practicum.taskmanager.tasktypes.Subtask;
 import ru.yandex.practicum.taskmanager.tasktypes.Task;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 		@Test
@@ -339,9 +342,12 @@ class InMemoryTaskManagerTest {
 				expectedTasks.add(task1);
 				expectedTasks.add(task5);
 				tm.addTask(task1);
-				tm.addTask(task2);
-				tm.addTask(task3);
-				tm.addTask(task4);
+				TimeValidationException thrown = assertThrows(TimeValidationException.class, () -> {
+					tm.addTask(task2);
+					tm.addTask(task3);
+					tm.addTask(task4);
+			});
+			assertEquals("Время добавляемой задачи пересекается с задачей c id=1", thrown.getMessage());
 				tm.addTask(task5);
 				List<Task> tasks = tm.getTaskList();
 				assertEquals(expectedTasks, tasks);
